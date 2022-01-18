@@ -9,7 +9,7 @@ npm start
 ```
 To run a dev version using ts-node use the following command
 ```javascript
-npm run devzpos
+npm run dev
 ```
 
 ## Packages
