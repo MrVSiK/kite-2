@@ -19,6 +19,7 @@ npm run devzpos
 - jsonwebtoken
 - body-parser
 - express
+- pino-http
 
 
 ## Getting Started
