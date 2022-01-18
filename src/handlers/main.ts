@@ -2,12 +2,13 @@ import type { RequestHandler } from "express";
 import { verify, sign } from "jsonwebtoken";
 import { hash, compare } from "bcrypt";
 import User from "../models/User";
+import { handleMongoError } from "./errors";
 
 export const DecodeJWT: RequestHandler = (req, res) => {
     const token = req.params.token;
     verify(token, process.env.SECRET as string, (err, decodedToken) => {
         if (err) {
-            console.log(err);
+            req.log.error(err.name)
             return res.status(401).json({
                 message: "Invalid Token",
                 error: err.name
@@ -25,7 +26,7 @@ export const LoginHandler: RequestHandler = (req, res) => {
         if(doc){
             compare(password, doc.password, (err, result) => {
                 if(err){
-                    console.error(err);
+                    req.log.error(err.name)
                     return res.status(500).json({
                         message: "Unable to Authenticate",
                         error: err.name
@@ -46,10 +47,7 @@ export const LoginHandler: RequestHandler = (req, res) => {
             })
         }
     }).catch(err => {
-        res.status(500).json({
-            message: "Unable to process login attempt",
-            error: err.name
-        })
+        handleMongoError(err, res);
     })
 }
 
@@ -59,7 +57,7 @@ export const RegisterHandler: RequestHandler = (req, res) => {
     const username = req.body.username as string;
     hash(password, 10, (err, hash) => {
         if(err){
-            console.error(err);
+            req.log.error(err.name)
             return res.status(500).json({
                 message: "Unable to accept password",
                 error: err.name
@@ -75,10 +73,7 @@ export const RegisterHandler: RequestHandler = (req, res) => {
                 message: "Successfully resgistered"
             })
         }).catch(err => {
-            res.status(500).json({
-                message: "Unable to register",
-                error: err.name
-            })
+            handleMongoError(err, res);
         })
     })
 }

@@ -1,14 +1,15 @@
 import { Router } from "express";
 const router = Router();
 import { DecodeJWT, LoginHandler, RegisterHandler } from "../handlers/main";
-import { checkToken } from "../middleware/checkToken";
-
-router.get("/try/access/:token", checkToken, DecodeJWT);
+import { check2Parameters, check3Parameters } from "../middleware/main";
 
 
-router.post("/login", LoginHandler);
+router.get("/try/access/:token", DecodeJWT);
 
 
-router.post("/register", RegisterHandler);
+router.post("/login", check2Parameters, LoginHandler);
+
+
+router.post("/register", check3Parameters, RegisterHandler);
 
 export default router;
