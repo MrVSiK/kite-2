@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import routes from "./routes/main";
 import bodyParser from "body-parser";
 import pino_http from "pino-http";
+import cors from "cors";
 
 config();
 const app = express();
@@ -17,6 +18,7 @@ connect(process.env.MONGO as string).then(() => {
     console.error(err);
 })
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger);
 app.use('/', routes);
